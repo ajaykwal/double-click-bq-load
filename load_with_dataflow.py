@@ -75,6 +75,12 @@ class ToTableRowDoFn(beam.DoFn):
     row["ImpressionId"]=values[52]
     return [row]
 
+''' This is to group elements by event date to generate dimensions 
+    Emits A tuple of event date + dimension , 1 combination 
+    Event_Date + City 
+    Event Date + Browser  
+    ....
+'''
 class CollectCities(beam.DoFn):
   def process(self,element):
       return [(element['event_date']+','+'CITY'+','+element['City'],1 )]
@@ -127,7 +133,6 @@ def run(argv=None):
     parser.add_argument('--output',
                       dest='output',   
                       help='Output file to write results to.')
-    print "argument passed"
     bq_schema=get_schema()
     known_args, pipeline_args = parser.parse_known_args(argv)
     
